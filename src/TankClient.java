@@ -27,9 +27,8 @@ public class TankClient extends Frame {
 		missiles = new ArrayList<Missile>();
 		myTank = new Tank(50, 50, true, Direction.STOP, this);
 		enemies = new ArrayList<Tank>();
-		for(int i = 0; i < ENEMY_TANK_NUMBER; i++) {
-			Tank et = new Tank(80 + i * (Tank.TANK_WIDTH + 10), 50, false, Direction.STOP, this);
-			enemies.add(et);
+		for(int i = 0; i < ENEMY_TANK_NUMBER; i++) {	
+			enemies.add(new Tank(80 + i * (Tank.TANK_WIDTH + 10), 50, false, Direction.D, this));
 		}
 		backScreenImage = this.createImage(WIDTH, HEIGHT);
 		explodes = new ArrayList<Explode>();
@@ -52,6 +51,7 @@ public class TankClient extends Frame {
 		for(int i = 0; i < missiles.size(); i++) {
 			Missile missile = missiles.get(i);
 			missile.hitTanks(enemies);
+			missile.hitTank(myTank);
 			missile.draw(g);
 		}
 	}
