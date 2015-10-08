@@ -11,6 +11,16 @@ import java.awt.*;
 import java.awt.event.*;
 public class TankClient extends Frame {
 	
+	private int x = 50, y = 50;
+	
+	public void paint(Graphics g) {
+		Color c = g.getColor();
+		g.setColor(Color.RED);
+		g.fillOval(x, y, 30, 30);
+		g.setColor(c);
+		y += 5;
+	}
+
 	public void launchFram() {
 		this.setLocation(400, 300);
 		this.setSize(800, 600);
@@ -22,7 +32,23 @@ public class TankClient extends Frame {
 			}
 		});
 		this.setResizable(false);
+		this.setBackground(Color.GREEN);
 		setVisible(true);
+		// multi-thread start
+		new Thread(new PaintThread()).start();
+	}
+	
+	private class PaintThread implements Runnable {
+		public void run() {
+			while(true) {
+				repaint();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
