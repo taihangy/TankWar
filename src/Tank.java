@@ -16,8 +16,8 @@ public class Tank {
 	protected TankClient tc;
 	protected Direction dir = Direction.STOP;
 	protected Direction ptDir = Direction.D;
-	public static final int TANK_SPEED_X = 5;
-	public static final int TANK_SPEED_Y = 5;
+	public static final int TANK_SPEED_X = 10;
+	public static final int TANK_SPEED_Y = 10;
 	public static final int TANK_WIDTH = 30;
 	public static final int TANK_HEIGHT = 30;
 	
@@ -127,6 +127,10 @@ public class Tank {
 		if(dir != Direction.STOP) {
 			ptDir = dir;
 		}
+		if(posX < 0) posX = 0;
+		if(posY < 21) posY = 21;
+		if(posX > TankClient.WIDTH - TANK_WIDTH) posX = TankClient.WIDTH - TANK_WIDTH;
+		if(posY > TankClient.HEIGHT - TANK_HEIGHT) posY = TankClient.HEIGHT - TANK_HEIGHT;
 	}
 	
 	public void keyPressed(KeyEvent e) {
@@ -152,7 +156,10 @@ public class Tank {
 		locateDir();
 	}
 	
-	/** === helper === */
+	/** ======== 
+	 *  =helper=
+	 *  ========
+	 * */
 	
 	private void locateDir() {
 		if(bL && !bR && !bU && !bD) dir = Direction.L;
@@ -172,11 +179,5 @@ public class Tank {
 		tc.missiles.add(m);
 		return m;
 	}
-	
-	public static void main(String[] args) {
-	}
-
-	
-
 }
 
