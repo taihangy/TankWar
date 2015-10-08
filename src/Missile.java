@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.util.List;
 
 /**
  * @Title: Missile.java
@@ -11,8 +13,8 @@ import java.awt.Graphics;
  */
 public class Missile {
 	public static final int DIAMETER = 10;
-	public static final int MISSILE_SPEED_X = 10;
-	public static final int MISSILE_SPEED_Y = 10;
+	public static final int MISSILE_SPEED_X = 15;
+	public static final int MISSILE_SPEED_Y = 15;
 	protected int posX, posY;
 	protected Direction dir; 
 	protected boolean alive;
@@ -31,6 +33,10 @@ public class Missile {
 	}
 	
 	public void draw(Graphics g) {
+		if(!alive) {
+			tc.missiles.remove(this);
+			return;
+		}
 		Color c = g.getColor();
 		g.setColor(Color.BLACK);
 		g.fillOval(posX, posY, DIAMETER, DIAMETER);
@@ -38,6 +44,33 @@ public class Missile {
 		move();
 	}
 	
+	public boolean hitTank(Tank t) {
+		if(t.alive && getRect().intersects(t.getRect())){
+			t.alive = false;
+			alive = false;
+			Explode e = new Explode(posX, posY, true, 0, tc);
+			tc.explodes.add(e);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean hitTanks(List<Tank> tanks) {
+		for(int i = 0; i < tanks.size(); i++) {
+			Tank t = tanks.get(i);
+			if(this.hitTank(t)) return true;
+		}
+		return false;
+	}
+	
+	public Rectangle getRect() {
+		return new Rectangle(posX, posY, DIAMETER, DIAMETER);
+	}
+	
+	/** ========
+	 *  =helper=
+	 *  ========
+	 */
 	private void move() {
 		switch(dir) {
 		case L: 
@@ -75,12 +108,7 @@ public class Missile {
 		if(posX < 0 || posY < 0 || 
 		   posX > TankClient.WIDTH - DIAMETER / 2 || posY > TankClient.HEIGHT - DIAMETER / 2) {
 			alive = false;
-			tc.missiles.remove(this);
 		}
 	}
-
-	public static void main(String[] args) {
-	}
-
 }
 

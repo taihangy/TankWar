@@ -15,26 +15,43 @@ public class TankClient extends Frame {
 	public static final int HEIGHT = 600;
 	public static final int POSITION_X = 400;
 	public static final int POSITION_Y = 300;
+	public static final int ENEMY_TANK_NUMBER = 10;
 	
 	protected Tank myTank;
-	protected Tank enemyTank;
+	protected ArrayList<Tank> enemies;
 	protected ArrayList<Missile> missiles;
+	protected ArrayList<Explode> explodes;
 	protected Image backScreenImage;
 	
 	public TankClient() {
 		missiles = new ArrayList<Missile>();
-		myTank = new Tank(50, 50, true, this);
-		enemyTank = new Tank(90, 50, false, this);
+		myTank = new Tank(50, 50, true, Direction.STOP, this);
+		enemies = new ArrayList<Tank>();
+		for(int i = 0; i < ENEMY_TANK_NUMBER; i++) {
+			Tank et = new Tank(80 + i * (Tank.TANK_WIDTH + 10), 50, false, Direction.STOP, this);
+			enemies.add(et);
+		}
 		backScreenImage = this.createImage(WIDTH, HEIGHT);
+		explodes = new ArrayList<Explode>();
 		launchFrame();
 	}
 	
 	public void paint(Graphics g) {
 		g.drawString("Missiles count: " + missiles.size(), WIDTH - 120, 50);
+		g.drawString("Explodes count: " + explodes.size(), WIDTH - 120, 70);
+		g.drawString("Enemies count: " + enemies.size(), WIDTH - 120, 90);
 		myTank.draw(g);
-		enemyTank.draw(g);
+		for(int i = 0; i < enemies.size(); i++) {
+			Tank et = enemies.get(i);
+			et.draw(g);
+		}
+		for(int i = 0; i < explodes.size(); i++) {
+			Explode e = explodes.get(i);
+			e.draw(g);
+		}
 		for(int i = 0; i < missiles.size(); i++) {
 			Missile missile = missiles.get(i);
+			missile.hitTanks(enemies);
 			missile.draw(g);
 		}
 	}
