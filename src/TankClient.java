@@ -10,8 +10,13 @@
 import java.awt.*;
 import java.awt.event.*;
 public class TankClient extends Frame {
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 600;
+	public static final int POSITION_X = 400;
+	public static final int POSITION_Y = 300;
 	
 	private int x = 50, y = 50;
+	private Image backScreenImage = null;
 	
 	public void paint(Graphics g) {
 		Color c = g.getColor();
@@ -20,10 +25,26 @@ public class TankClient extends Frame {
 		g.setColor(c);
 		y += 5;
 	}
-
+	
+	//Double buffer and background color
+	//Repaint would call update override which would call draw
+	public void update(Graphics g) {
+		if(backScreenImage == null) {
+			backScreenImage = this.createImage(WIDTH, HEIGHT);
+		}
+		Graphics gBackScreen = backScreenImage.getGraphics();
+		//Get color and draw image background color
+		Color c = gBackScreen.getColor();
+		gBackScreen.setColor(Color.GREEN);
+		gBackScreen.fillRect(0, 0, WIDTH, HEIGHT);
+		gBackScreen.setColor(c);
+		paint(gBackScreen);
+		g.drawImage(backScreenImage, 0, 0, null);
+	}
+	
 	public void launchFram() {
-		this.setLocation(400, 300);
-		this.setSize(800, 600);
+		this.setLocation(POSITION_X, POSITION_Y);
+		this.setSize(WIDTH, HEIGHT);
 		this.setTitle("TankWar");
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
