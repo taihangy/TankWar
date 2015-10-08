@@ -139,7 +139,6 @@ public class Tank {
 		case KeyEvent.VK_LEFT: bL = true; break;
 		case KeyEvent.VK_UP: bU = true; break;
 		case KeyEvent.VK_DOWN: bD = true; break;
-		case KeyEvent.VK_CONTROL: tc.missile = fire(); break;
 		}
 		locateDir();
 	}
@@ -151,6 +150,7 @@ public class Tank {
 		case KeyEvent.VK_LEFT: bL = false; break;
 		case KeyEvent.VK_UP: bU = false; break;
 		case KeyEvent.VK_DOWN: bD = false;; break;
+		case KeyEvent.VK_CONTROL: fire(); break;
 		}
 		locateDir();
 	}
@@ -172,6 +172,7 @@ public class Tank {
 	private Missile fire() {
 		Missile m = new Missile(posX + TANK_WIDTH / 2 - Missile.DIAMETER / 2, 
 								posY + TANK_HEIGHT / 2 - Missile.DIAMETER / 2, ptDir);
+		tc.missiles.add(m);
 		return m;
 	}
 	

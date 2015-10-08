@@ -9,20 +9,30 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 public class TankClient extends Frame {
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
 	public static final int POSITION_X = 400;
 	public static final int POSITION_Y = 300;
 	
+	protected Tank myTank;
+	protected ArrayList<Missile> missiles;
+	protected Image backScreenImage;
 	
-	Tank myTank = new Tank(50, 50, this);
-	Missile missile = null;
-	private Image backScreenImage = null;
+	public TankClient() {
+		missiles = new ArrayList<Missile>();
+		myTank = new Tank(50, 50, this);
+		backScreenImage = this.createImage(WIDTH, HEIGHT);
+		launchFrame();
+	}
 	
 	public void paint(Graphics g) {
+		g.drawString("Missiles count: " + missiles.size(), WIDTH - 120, 50);
 		myTank.draw(g);
-		if(missile != null) missile.draw(g);
+		for(Missile missile : missiles) {
+			missile.draw(g);
+		}
 	}
 	
 	//Double buffer and background color
@@ -41,7 +51,7 @@ public class TankClient extends Frame {
 		g.drawImage(backScreenImage, 0, 0, null);
 	}
 	
-	public void launchFram() {
+	public void launchFrame() {
 		this.setLocation(POSITION_X, POSITION_Y);
 		this.setSize(WIDTH, HEIGHT);
 		this.setTitle("TankWar");
@@ -88,7 +98,6 @@ public class TankClient extends Frame {
 	
 	public static void main(String[] args) {
 		TankClient tc = new TankClient();
-		tc.launchFram();
 	}
 
 }
