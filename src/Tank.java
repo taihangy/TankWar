@@ -16,19 +16,21 @@ public class Tank {
 	protected TankClient tc;
 	protected Direction dir = Direction.STOP;
 	protected Direction ptDir = Direction.D;
+	protected boolean good;
 	public static final int TANK_SPEED_X = 10;
 	public static final int TANK_SPEED_Y = 10;
 	public static final int TANK_WIDTH = 30;
 	public static final int TANK_HEIGHT = 30;
 	
-	public Tank(int posX, int posY) {
+	public Tank(int posX, int posY, boolean good) {
 		assert posX >= 0 && posY >= 0;
 		this.posX = posX;
 		this.posY = posY;
+		this.good = good;
 	}
 	
-	public Tank(int posX, int posY, TankClient tc) {
-		this(posX, posY);
+	public Tank(int posX, int posY, boolean good, TankClient tc) {
+		this(posX, posY, good);
 		assert tc != null;
 		this.tc = tc;
 	}
@@ -79,7 +81,8 @@ public class Tank {
 
 	private void drawTankBody(Graphics g) {
 		Color c = g.getColor();
-		g.setColor(Color.RED);
+		if(good) g.setColor(Color.RED);
+		else g.setColor(Color.BLUE);
 		g.fillOval(posX, posY, TANK_WIDTH, TANK_HEIGHT);
 		g.setColor(c);
 	}
