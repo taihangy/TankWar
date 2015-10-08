@@ -14,17 +14,13 @@ public class TankClient extends Frame {
 	public static final int HEIGHT = 600;
 	public static final int POSITION_X = 400;
 	public static final int POSITION_Y = 300;
-	public static final int TANK_SPEED_X = 5;
-	public static final int TANK_SPEED_Y = 5;
 	
-	private int x = 50, y = 50;
+	
+	Tank myTank = new Tank(50, 50);
 	private Image backScreenImage = null;
 	
 	public void paint(Graphics g) {
-		Color c = g.getColor();
-		g.setColor(Color.RED);
-		g.fillOval(x, y, 30, 30);
-		g.setColor(c);
+		myTank.draw(g);
 	}
 	
 	//Double buffer and background color
@@ -79,13 +75,7 @@ public class TankClient extends Frame {
 
 		public void keyPressed(KeyEvent e) {
 //			System.out.println("ok");
-			int key = e.getKeyCode();
-			switch(key){
-			case KeyEvent.VK_RIGHT: x += TANK_SPEED_X; break;
-			case KeyEvent.VK_LEFT: x -= TANK_SPEED_X; break;
-			case KeyEvent.VK_UP: y -= TANK_SPEED_Y; break;
-			case KeyEvent.VK_DOWN: y += TANK_SPEED_Y; break;
-			}
+			myTank.keyPressed(e);
 		}
 		 
 	}
