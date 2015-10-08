@@ -14,6 +14,8 @@ public class TankClient extends Frame {
 	public static final int HEIGHT = 600;
 	public static final int POSITION_X = 400;
 	public static final int POSITION_Y = 300;
+	public static final int TANK_SPEED_X = 5;
+	public static final int TANK_SPEED_Y = 5;
 	
 	private int x = 50, y = 50;
 	private Image backScreenImage = null;
@@ -23,7 +25,6 @@ public class TankClient extends Frame {
 		g.setColor(Color.RED);
 		g.fillOval(x, y, 30, 30);
 		g.setColor(c);
-		y += 5;
 	}
 	
 	//Double buffer and background color
@@ -54,6 +55,8 @@ public class TankClient extends Frame {
 		});
 		this.setResizable(false);
 		this.setBackground(Color.GREEN);
+		
+		this.addKeyListener(new KeyMonitor());
 		setVisible(true);
 		// multi-thread start
 		new Thread(new PaintThread()).start();
@@ -70,6 +73,21 @@ public class TankClient extends Frame {
 				}
 			}
 		}
+	}
+	
+	private class KeyMonitor extends KeyAdapter {
+
+		public void keyPressed(KeyEvent e) {
+//			System.out.println("ok");
+			int key = e.getKeyCode();
+			switch(key){
+			case KeyEvent.VK_RIGHT: x += TANK_SPEED_X; break;
+			case KeyEvent.VK_LEFT: x -= TANK_SPEED_X; break;
+			case KeyEvent.VK_UP: y -= TANK_SPEED_Y; break;
+			case KeyEvent.VK_DOWN: y += TANK_SPEED_Y; break;
+			}
+		}
+		 
 	}
 	
 	public static void main(String[] args) {
