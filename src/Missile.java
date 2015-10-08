@@ -13,13 +13,21 @@ public class Missile {
 	public static final int DIAMETER = 10;
 	public static final int MISSILE_SPEED_X = 10;
 	public static final int MISSILE_SPEED_Y = 10;
-	private int posX, posY;
-	private Tank.Direction dir; 
+	protected int posX, posY;
+	protected Direction dir; 
+	protected boolean alive;
+	protected TankClient tc;
 	
-	public Missile(int posX, int posY, Tank.Direction dir) {
+	public Missile(int posX, int posY, Direction dir) {
 		this.posX = posX;
 		this.posY = posY;
 		this.dir = dir;
+		this.alive = true;
+	}
+	
+	public Missile(int posX, int posY, Direction dir, TankClient tc) {
+		this(posX, posY, dir);
+		this.tc = tc;
 	}
 	
 	public void draw(Graphics g) {
@@ -63,11 +71,15 @@ public class Missile {
 		default:
 			break;
 		}
+		
+		if(posX < 0 || posY < 0 || 
+		   posX > TankClient.WIDTH - DIAMETER / 2 || posY > TankClient.HEIGHT - DIAMETER / 2) {
+			alive = false;
+			tc.missiles.remove(this);
+		}
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

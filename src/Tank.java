@@ -20,9 +20,6 @@ public class Tank {
 	public static final int TANK_SPEED_Y = 5;
 	public static final int TANK_WIDTH = 30;
 	public static final int TANK_HEIGHT = 30;
-	public enum Direction {
-		L, LU, U, RU, R, RD, D, LD, STOP
-	}
 	
 	public Tank(int posX, int posY) {
 		assert posX >= 0 && posY >= 0;
@@ -171,14 +168,12 @@ public class Tank {
 	
 	private Missile fire() {
 		Missile m = new Missile(posX + TANK_WIDTH / 2 - Missile.DIAMETER / 2, 
-								posY + TANK_HEIGHT / 2 - Missile.DIAMETER / 2, ptDir);
+								posY + TANK_HEIGHT / 2 - Missile.DIAMETER / 2, ptDir, tc);
 		tc.missiles.add(m);
 		return m;
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 	

@@ -30,7 +30,8 @@ public class TankClient extends Frame {
 	public void paint(Graphics g) {
 		g.drawString("Missiles count: " + missiles.size(), WIDTH - 120, 50);
 		myTank.draw(g);
-		for(Missile missile : missiles) {
+		for(int i = 0; i < missiles.size(); i++) {
+			Missile missile = missiles.get(i);
 			missile.draw(g);
 		}
 	}
@@ -90,7 +91,6 @@ public class TankClient extends Frame {
 		}
 
 		public void keyPressed(KeyEvent e) {
-//			System.out.println("ok");
 			myTank.keyPressed(e);
 		}
 		 
