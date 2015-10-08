@@ -95,6 +95,7 @@ public class Tank {
 		else if(!bL && bR && !bU && bD) dir = Direction.RD;
 		else if(!bL && !bR && !bU && bD) dir = Direction.D;
 		else if(bL && !bR && !bU && bD) dir = Direction.LD;
+		else dir = Direction.STOP;
 	}
 	
 	public static void main(String[] args) {
