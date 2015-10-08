@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
  */
 public class Tank {
 	protected int posX, posY;
+	protected boolean bL, bR, bU, bD;
+	protected Direction dir = Direction.STOP;
 	public static final int TANK_SPEED_X = 5;
 	public static final int TANK_SPEED_Y = 5;
 	
@@ -25,22 +27,82 @@ public class Tank {
 		g.setColor(Color.RED);
 		g.fillOval(posX, posY, 30, 30);
 		g.setColor(c);
+		move(dir);
+	}
+	
+	private void move(Direction dir) {
+		switch(dir) {
+		case L: 
+			posX -= TANK_SPEED_X; 
+			break;
+		case LU: 
+			posX -= TANK_SPEED_X; 
+			posY -= TANK_SPEED_Y;
+			break;
+		case U: 
+			posY -= TANK_SPEED_Y; 
+			break;
+		case RU: 
+			posX += TANK_SPEED_X;
+			posY -= TANK_SPEED_Y;
+			break;
+		case R: 
+			posX += TANK_SPEED_X; 
+			break;
+		case RD: 
+			posX += TANK_SPEED_X; 
+			posY += TANK_SPEED_Y;
+			break;
+		case D: 
+			posY += TANK_SPEED_Y; 
+			break;
+		case LD: 
+			posX -= TANK_SPEED_X; 
+			posY += TANK_SPEED_Y;
+			break;
+		case STOP: break;
+		}
 	}
 	
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch(key){
-		case KeyEvent.VK_RIGHT: posX += TANK_SPEED_X; break;
-		case KeyEvent.VK_LEFT: posX -= TANK_SPEED_X; break;
-		case KeyEvent.VK_UP: posY -= TANK_SPEED_Y; break;
-		case KeyEvent.VK_DOWN: posY += TANK_SPEED_Y; break;
+		case KeyEvent.VK_RIGHT: bR = true; break;
+		case KeyEvent.VK_LEFT: bL = true; break;
+		case KeyEvent.VK_UP: bU = true; break;
+		case KeyEvent.VK_DOWN: bD = true;; break;
 		}
+		locateDir();
+	}
+	
+	public void keyReleased(KeyEvent e) {
+		int key = e.getKeyCode();
+		switch(key){
+		case KeyEvent.VK_RIGHT: bR = false; break;
+		case KeyEvent.VK_LEFT: bL = false; break;
+		case KeyEvent.VK_UP: bU = false; break;
+		case KeyEvent.VK_DOWN: bD = false;; break;
+		}
+		locateDir();
+	}
+	
+	private void locateDir() {
+		if(bL && !bR && !bU && !bD) dir = Direction.L;
+		else if(bL && !bR && bU && !bD) dir = Direction.LU;
+		else if(!bL && !bR && bU && !bD) dir = Direction.U;
+		else if(!bL && bR && bU && !bD) dir = Direction.RU;
+		else if(!bL && bR && !bU && !bD) dir = Direction.R;
+		else if(!bL && bR && !bU && bD) dir = Direction.RD;
+		else if(!bL && !bR && !bU && bD) dir = Direction.D;
+		else if(bL && !bR && !bU && bD) dir = Direction.LD;
 	}
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
+
+	
 
 }
 

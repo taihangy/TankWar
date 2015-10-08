@@ -7,6 +7,6 @@
  * @version V1.0
  */
 public enum Direction {
-	LEFT, RIGHT, UP, DOWN
+	L, LU, U, RU, R, RD, D, LD, STOP
 }
 
