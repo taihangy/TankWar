@@ -1,7 +1,7 @@
 /**
  * @Title: Direction.java
  * @Package 
- * @Description: TODO(添加描述)
+ * @Description: Eight directions
  * @author A18ccms A18ccms_gmail_com
  * @date Oct 7, 2015 9:27:41 PM
  * @version V1.0

@@ -13,23 +13,88 @@ import java.awt.event.KeyEvent;
 public class Tank {
 	protected int posX, posY;
 	protected boolean bL, bR, bU, bD;
+	protected TankClient tc;
 	protected Direction dir = Direction.STOP;
+	protected Direction ptDir = Direction.D;
 	public static final int TANK_SPEED_X = 5;
 	public static final int TANK_SPEED_Y = 5;
+	public static final int TANK_WIDTH = 30;
+	public static final int TANK_HEIGHT = 30;
+	public enum Direction {
+		L, LU, U, RU, R, RD, D, LD, STOP
+	}
 	
 	public Tank(int posX, int posY) {
+		assert posX >= 0 && posY >= 0;
 		this.posX = posX;
 		this.posY = posY;
 	}
 	
+	public Tank(int posX, int posY, TankClient tc) {
+		this(posX, posY);
+		assert tc != null;
+		this.tc = tc;
+	}
+	
 	public void draw(Graphics g) {
-		Color c = g.getColor();
-		g.setColor(Color.RED);
-		g.fillOval(posX, posY, 30, 30);
-		g.setColor(c);
+		drawTankBody(g);
+		drawPT(g);
 		move(dir);
 	}
 	
+	private void drawPT(Graphics g) {
+		switch(ptDir) {
+		case L: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX, posY + TANK_HEIGHT / 2);
+			break;
+		case LU: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX, posY);
+			break;
+		case U: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX + TANK_WIDTH / 2, posY);
+			break;
+		case RU: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX + TANK_WIDTH, posY);
+			break;
+		case R: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX + TANK_WIDTH, posY + TANK_HEIGHT / 2);
+			break;
+		case RD: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX + TANK_WIDTH, posY + TANK_HEIGHT);
+			break;
+		case D: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX + TANK_WIDTH / 2, posY + TANK_HEIGHT);
+			break;
+		case LD: 
+			g.drawLine(posX + TANK_WIDTH / 2, posY + TANK_HEIGHT / 2, 
+					   posX, posY + TANK_HEIGHT);
+			break;
+		
+		}
+	}
+
+	private void drawTankBody(Graphics g) {
+		Color c = g.getColor();
+		g.setColor(Color.RED);
+		g.fillOval(posX, posY, TANK_WIDTH, TANK_HEIGHT);
+		g.setColor(c);
+	}
+
+	/**
+	 * 
+	 * @Title: move
+	 * @Description: Tank moving
+	 * @param @param dir move with this direction 
+	 * @return void    
+	 * @throws
+	 */
 	private void move(Direction dir) {
 		switch(dir) {
 		case L: 
@@ -62,6 +127,9 @@ public class Tank {
 			break;
 		case STOP: break;
 		}
+		if(dir != Direction.STOP) {
+			ptDir = dir;
+		}
 	}
 	
 	public void keyPressed(KeyEvent e) {
@@ -70,11 +138,12 @@ public class Tank {
 		case KeyEvent.VK_RIGHT: bR = true; break;
 		case KeyEvent.VK_LEFT: bL = true; break;
 		case KeyEvent.VK_UP: bU = true; break;
-		case KeyEvent.VK_DOWN: bD = true;; break;
+		case KeyEvent.VK_DOWN: bD = true; break;
+		case KeyEvent.VK_CONTROL: tc.missile = fire(); break;
 		}
 		locateDir();
 	}
-	
+
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
 		switch(key){
@@ -86,6 +155,8 @@ public class Tank {
 		locateDir();
 	}
 	
+	/** === helper === */
+	
 	private void locateDir() {
 		if(bL && !bR && !bU && !bD) dir = Direction.L;
 		else if(bL && !bR && bU && !bD) dir = Direction.LU;
@@ -96,6 +167,12 @@ public class Tank {
 		else if(!bL && !bR && !bU && bD) dir = Direction.D;
 		else if(bL && !bR && !bU && bD) dir = Direction.LD;
 		else dir = Direction.STOP;
+	}
+	
+	private Missile fire() {
+		Missile m = new Missile(posX + TANK_WIDTH / 2 - Missile.DIAMETER / 2, 
+								posY + TANK_HEIGHT / 2 - Missile.DIAMETER / 2, ptDir);
+		return m;
 	}
 	
 	public static void main(String[] args) {

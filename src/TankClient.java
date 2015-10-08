@@ -16,11 +16,13 @@ public class TankClient extends Frame {
 	public static final int POSITION_Y = 300;
 	
 	
-	Tank myTank = new Tank(50, 50);
+	Tank myTank = new Tank(50, 50, this);
+	Missile missile = null;
 	private Image backScreenImage = null;
 	
 	public void paint(Graphics g) {
 		myTank.draw(g);
+		if(missile != null) missile.draw(g);
 	}
 	
 	//Double buffer and background color
