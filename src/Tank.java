@@ -45,7 +45,6 @@ public class Tank {
 	
 	public void draw(Graphics g) {
 		if(!alive) {
-			if(!good) tc.enemies.remove(this);
 			return;
 		}
 		drawTankBody(g);
