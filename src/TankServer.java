@@ -1,4 +1,4 @@
-import java.io.DataInputStream;
+import java.io.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,6 +14,7 @@ import java.util.List;
  * @version V1.0
  */
 public class TankServer {
+	private static int ID = 100; //Tank Unique ID (or we can use java UUID)
 	public static final int TCP_PORT = 8888;
 	protected List<Client> clients = new ArrayList<Client>();
 	
@@ -28,6 +29,8 @@ public class TankServer {
 		while(true) {
 			Socket s = null;
 			try {
+				//If we use multi-thread to handle several client we should be aware
+				//of synchronize issue because ID may be the same
 				s = ss.accept();
 				//Save IP and udpPort into Client list
 				DataInputStream dis = new DataInputStream(s.getInputStream());
@@ -35,8 +38,10 @@ public class TankServer {
 				String IP = s.getInetAddress().getHostAddress();
 				Client c = new Client(IP, updPort);
 				clients.add(c);
-				s.close();
-	System.out.println("A Client Connect! Addr: " + s.getInetAddress() + ":" + s.getPort());
+				//Write stream ID
+				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+				dos.writeInt(ID++);
+	System.out.println("A Client Connect! Addr: " + s.getInetAddress() + ":" + s.getPort() + "---UDP Port:" + updPort);
 			} catch(IOException e) {
 				e.printStackTrace();
 			} finally {

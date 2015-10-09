@@ -21,7 +21,9 @@ public class Tank {
 	protected boolean good;
 	protected boolean alive;
 	protected Direction[] dirs = Direction.values();
-	protected int step = r.nextInt(12) + 3;;
+	protected int step = r.nextInt(12) + 3;
+	//Unique ID server give
+	protected int id;
 	public static final int TANK_SPEED_X = 10;
 	public static final int TANK_SPEED_Y = 10;
 	public static final int TANK_WIDTH = 30;
@@ -127,6 +129,7 @@ public class Tank {
 		if(good) g.setColor(Color.RED);
 		else g.setColor(Color.BLUE);
 		g.fillOval(posX, posY, TANK_WIDTH, TANK_HEIGHT);
+g.drawString("id: " + id, posX, posY - 10);
 		g.setColor(c);
 	}
 	

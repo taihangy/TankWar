@@ -1,3 +1,4 @@
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -14,9 +15,11 @@ import java.net.UnknownHostException;
 public class NetClient {
 	private static int UDP_PORT_START = 2223;
 	protected int udpPort;
+	protected TankClient tc;
 	
-	public NetClient() {
+	public NetClient(TankClient tc) {
 		udpPort = UDP_PORT_START++;
+		this.tc = tc;
 	}
 	
 	public void connect(String IP, int port) {
@@ -25,8 +28,11 @@ public class NetClient {
 			s = new Socket(IP, port);
 			DataOutputStream dos = new DataOutputStream(s.getOutputStream());
 			dos.writeInt(udpPort);
-			s.close();
-System.out.println("Connected to server");
+			//Get ID from server and save it into myTank.id
+			DataInputStream dis = new DataInputStream(s.getInputStream());
+			int id = dis.readInt();
+			tc.myTank.id = id;
+System.out.println("Connected to server! and server give me a ID: " + id);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

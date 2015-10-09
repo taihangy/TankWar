@@ -10,6 +10,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.UUID;
+
 public class TankClient extends Frame {
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
@@ -28,7 +30,7 @@ public class TankClient extends Frame {
 		myTank = new Tank(50, 50, true, Direction.STOP, this);
 		backScreenImage = this.createImage(WIDTH, HEIGHT);
 		explodes = new ArrayList<Explode>();
-		nc = new NetClient();
+		nc = new NetClient(this);
 		launchFrame();
 	}
 	
