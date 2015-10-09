@@ -1,8 +1,8 @@
 /**
  * @Title: TankClient.java
  * @Package 
- * @Description: TODO(添加描述)
- * @author A18ccms A18ccms_gmail_com
+ * @Description: Tank Client
+ * @author Taihang Ye
  * @date Oct 7, 2015 7:59:43 PM
  * @version V1.0
  */
@@ -16,17 +16,19 @@ public class TankClient extends Frame {
 	public static final int POSITION_X = 400;
 	public static final int POSITION_Y = 300;
 	public static final int ENEMY_TANK_NUMBER = 10;
-	
+	 
 	protected Tank myTank;
 	protected ArrayList<Missile> missiles;
 	protected ArrayList<Explode> explodes;
 	protected Image backScreenImage;
+	protected NetClient nc;
 	
 	public TankClient() {
 		missiles = new ArrayList<Missile>();
 		myTank = new Tank(50, 50, true, Direction.STOP, this);
 		backScreenImage = this.createImage(WIDTH, HEIGHT);
 		explodes = new ArrayList<Explode>();
+		nc = new NetClient();
 		launchFrame();
 	}
 	
@@ -78,6 +80,8 @@ public class TankClient extends Frame {
 		setVisible(true);
 		// multi-thread start
 		new Thread(new PaintThread()).start();
+		
+		nc.connect("127.0.0.1", TankServer.TCP_PORT);
 	}
 	
 	private class PaintThread implements Runnable {
