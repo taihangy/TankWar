@@ -10,7 +10,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.UUID;
 
 public class TankClient extends Frame {
 	public static final int WIDTH = 800;
@@ -21,6 +20,7 @@ public class TankClient extends Frame {
 	 
 	protected Tank myTank;
 	protected ArrayList<Missile> missiles;
+	protected ArrayList<Tank> tanks;
 	protected ArrayList<Explode> explodes;
 	protected Image backScreenImage;
 	protected NetClient nc;
@@ -28,6 +28,7 @@ public class TankClient extends Frame {
 	public TankClient() {
 		missiles = new ArrayList<Missile>();
 		myTank = new Tank(50, 50, true, Direction.STOP, this);
+		tanks = new ArrayList<Tank>();
 		backScreenImage = this.createImage(WIDTH, HEIGHT);
 		explodes = new ArrayList<Explode>();
 		nc = new NetClient(this);
@@ -41,6 +42,10 @@ public class TankClient extends Frame {
 		for(int i = 0; i < explodes.size(); i++) {
 			Explode e = explodes.get(i);
 			e.draw(g);
+		}
+		for(int i = 0; i < tanks.size(); i++) {
+			Tank t = tanks.get(i);
+			t.draw(g);
 		}
 		for(int i = 0; i < missiles.size(); i++) {
 			Missile missile = missiles.get(i);
@@ -82,7 +87,7 @@ public class TankClient extends Frame {
 		setVisible(true);
 		// multi-thread start
 		new Thread(new PaintThread()).start();
-		
+		//TCP connect to Server
 		nc.connect("127.0.0.1", TankServer.TCP_PORT);
 	}
 	

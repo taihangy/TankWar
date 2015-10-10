@@ -1,7 +1,12 @@
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +21,12 @@ import java.util.List;
 public class TankServer {
 	private static int ID = 100; //Tank Unique ID (or we can use java UUID)
 	public static final int TCP_PORT = 8888;
+	public static final int UDP_PORT = 6666;
 	protected List<Client> clients = new ArrayList<Client>();
 	
 	public void start() {
+		new Thread(new UDPThread()).start();
+		//TCP handshake
 		ServerSocket ss = null;
 		try {
 			ss = new ServerSocket(TCP_PORT);
@@ -69,6 +77,44 @@ public class TankServer {
 			this.IP = IP;
 			this.udpPort = udpPort;
 		}
+	}
+	
+	private class UDPThread implements Runnable {
+		
+		byte[] buf = new byte[1024];
+		
+		@Override
+		public void run() {
+			DatagramSocket ds = null;
+			try {
+				//UDP Socket--DataSocket
+				ds = new DatagramSocket(UDP_PORT);
+			} catch (SocketException e) {
+				e.printStackTrace();
+			}
+			
+System.out.println("UDP thread started at port: " + UDP_PORT);
+			while(ds != null) {
+				//DatagramPacket used to receive data, buf use to store data
+				DatagramPacket dp = new DatagramPacket(buf, buf.length);
+				try {
+					//Get datagram packet from client
+					ds.receive(dp);
+System.out.println("a packet received");
+					//Forward package to other clients
+					for(int i = 0; i < clients.size(); i++) {
+						Client c = clients.get(i);
+						dp.setSocketAddress(new InetSocketAddress(c.IP, c.udpPort));
+						ds.send(dp);
+					}
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
 	}
 }
 
