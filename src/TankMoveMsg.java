@@ -8,36 +8,41 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 
 /**
- * @Title: TankNewMsg.java
+ * @Title: TankMoveMsg.java
  * @Package 
- * @Description: TODO(添加描述)
+ * @Description: Tank move message
  * @author A18ccms A18ccms_gmail_com
- * @date Oct 9, 2015 7:44:52 PM
+ * @date Oct 9, 2015 10:09:51 PM
  * @version V1.0
  */
-public class TankNewMsg extends Msg{
-	protected int msgType = TANK_NEW_MSG;
-	protected Tank tank;
+public class TankMoveMsg extends Msg{
+	protected int msgType = TANK_MOVE_MSG;
+	protected int id;
+	protected int posX;
+	protected int posY;
+	protected Direction dir;
 	protected TankClient tc;
 	
-	public TankNewMsg(Tank tank) {
-		this.tank = tank;
+	public TankMoveMsg(int id, int posX, int posY, Direction dir) {
+		this.id = id;
+		this.dir = dir;
+		this.posX = posX;
+		this.posY = posY;
 	}
-	
-	public TankNewMsg(TankClient tc){
+
+	public TankMoveMsg(TankClient tc) {
 		this.tc = tc;
 	}
-	
+
 	public void send(DatagramSocket ds, String IP, int udpPort) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream dos = new DataOutputStream(baos);
 		try {
 			dos.writeInt(msgType);
-			dos.writeInt(tank.id);
-			dos.writeInt(tank.posX);
-			dos.writeInt(tank.posY);
-			dos.writeInt(tank.dir.ordinal());
-			dos.writeBoolean(tank.good);
+			dos.writeInt(id);
+			dos.writeInt(posX);
+			dos.writeInt(posY);
+			dos.writeInt(dir.ordinal());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -56,29 +61,20 @@ public class TankNewMsg extends Msg{
 		try {
 			int id = dis.readInt();
 			if(id == tc.myTank.id) return;
-			
 			int posX = dis.readInt();
 			int posY = dis.readInt();
 			Direction dir = Direction.values()[dis.readInt()];
-			boolean good = dis.readBoolean();
-//System.out.println("id: " + id + "-x: " + posX + "-y: " + posY + "-dir: " + dir + "-good: " + good);
-			boolean exist = false;
+//			boolean exist = false;
 			for(int i = 0; i < tc.tanks.size(); i++) {
 				Tank t = tc.tanks.get(i);
-				if(t.id == id) {
-					exist = true;
+				if(id == t.id) {
+					t.dir = dir;
+					t.posX = posX;
+					t.posY = posY;
+//					exist = true;
 					break;
 				}
-			}
-			if(!exist) {
-				//Send myTank to new added tank
-				TankNewMsg tnMsg = new TankNewMsg(tc.myTank);
-				tc.nc.send(tnMsg);
-				Tank t = new Tank(posX, posY, good, dir, tc);
-				t.id = id;
-				tc.tanks.add(t);
-			}
-			
+			} 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

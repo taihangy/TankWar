@@ -100,7 +100,7 @@ System.out.println("UDP thread started at port: " + UDP_PORT);
 				try {
 					//Get datagram packet from client
 					ds.receive(dp);
-System.out.println("a packet received");
+System.out.println("a packet received from client");
 					//Forward package to other clients
 					for(int i = 0; i < clients.size(); i++) {
 						Client c = clients.get(i);

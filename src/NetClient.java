@@ -18,7 +18,7 @@ import java.net.UnknownHostException;
  * @version V1.0
  */
 public class NetClient {
-	private static int UDP_PORT_START = 2224;
+	private static int UDP_PORT_START = 2228;
 	protected int udpPort;
 	protected TankClient tc;
 	protected DatagramSocket ds;
@@ -58,14 +58,14 @@ System.out.println("Connected to server! and server give me a ID: " + id);
 				}
 			}
 		}
-		//udp package
-		TankNewMsg msg = new TankNewMsg(tc.myTank);
+		//After TCP handshake, send tank new udp package
+		Msg msg = new TankNewMsg(tc.myTank);
 		send(msg);
 		
 		new Thread(new UDPReceiveThread()).start();
 	}
 	
-	public void send(TankNewMsg msg) {
+	public void send(Msg msg) {
 		 msg.send(ds, "127.0.0.1", TankServer.UDP_PORT);
 	}
 	
@@ -88,9 +88,24 @@ System.out.println("a packet received from server");
 		private void parse(DatagramPacket dp) {
 			ByteArrayInputStream bais = new ByteArrayInputStream(buf, 0, dp.getLength());
 			DataInputStream dis = new DataInputStream(bais);
-			//内部类访问封装类的对象
-			TankNewMsg msg = new TankNewMsg(NetClient.this.tc);
-			msg.parse(dis);
+			try {
+				int msgType = dis.readInt();
+				Msg msg = null;
+				switch(msgType) {
+				case Msg.TANK_NEW_MSG:
+					
+					//内部类访问封装类的对象可以用这种方法
+					msg = new TankNewMsg(NetClient.this.tc);
+					msg.parse(dis);
+					break;
+				case Msg.TANK_MOVE_MSG:
+					msg = new TankMoveMsg(tc);
+					msg.parse(dis);
+					break;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

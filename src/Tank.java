@@ -134,6 +134,7 @@ g.drawString("id: " + id, posX, posY - 10);
 	}
 	
 	private void locateDir() {
+		Direction oldDir = this.dir;
 		if(bL && !bR && !bU && !bD) dir = Direction.L;
 		else if(bL && !bR && bU && !bD) dir = Direction.LU;
 		else if(!bL && !bR && bU && !bD) dir = Direction.U;
@@ -143,6 +144,11 @@ g.drawString("id: " + id, posX, posY - 10);
 		else if(!bL && !bR && !bU && bD) dir = Direction.D;
 		else if(bL && !bR && !bU && bD) dir = Direction.LD;
 		else dir = Direction.STOP;
+		
+		if(dir != oldDir) {
+			TankMoveMsg msg = new TankMoveMsg(id, posX, posY, dir);
+			tc.nc.send(msg);
+		}
 	}
 	
 	private Missile fire() {
