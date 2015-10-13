@@ -66,6 +66,8 @@ public class TankClient extends Frame {
 			if(missile.hitTank(myTank)) {
 				TankDeadMsg msg = new TankDeadMsg(myTank.id);
 				nc.send(msg);
+				MissileDeadMsg mdmmsg = new MissileDeadMsg(missile.tankId, missile.id);
+				nc.send(mdmmsg);
 			}
 			missile.draw(g);
 		}

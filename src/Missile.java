@@ -20,15 +20,18 @@ public class Missile {
 	protected boolean alive;
 	protected boolean good;
 	protected TankClient tc;
-	protected int tankid;
+	protected int tankId;
+	protected static int ID = 1;
+	protected int id;
 	
 	
-	public Missile(int tankid, int posX, int posY, Direction dir) {
-		this.tankid = tankid;
+	public Missile(int tankId, int posX, int posY, Direction dir) {
+		this.tankId = tankId;
 		this.posX = posX;
 		this.posY = posY;
 		this.dir = dir;
 		this.alive = true;
+		this.id = ID++;
 	}
 	
 	public Missile(int tankid, int posX, int posY, Direction dir, boolean good, TankClient tc) {
