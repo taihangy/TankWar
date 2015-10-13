@@ -153,9 +153,12 @@ g.drawString("id: " + id, posX, posY - 10);
 	
 	private Missile fire() {
 		if(!alive) return null;
-		Missile m = new Missile(posX + TANK_WIDTH / 2 - Missile.DIAMETER / 2, 
+		Missile m = new Missile(id, posX + TANK_WIDTH / 2 - Missile.DIAMETER / 2, 
 								posY + TANK_HEIGHT / 2 - Missile.DIAMETER / 2, ptDir, good, tc);
 		tc.missiles.add(m);
+		
+		MissileNewMsg msg = new MissileNewMsg(m);
+		tc.nc.send(msg);
 		return m;
 	}
 	
@@ -168,15 +171,15 @@ g.drawString("id: " + id, posX, posY - 10);
 	 * @throws
 	 */
 	private void move() {
-		if(!good) {
-			if(step == 0) {
-				step = r.nextInt(12) + 3;
-				int rn = r.nextInt(dirs.length);
-				dir = dirs[rn];
-			}
-			step--;
-			if(r.nextInt(40) > 35) fire();
-		}
+//		if(!good) {
+//			if(step == 0) {
+//				step = r.nextInt(12) + 3;
+//				int rn = r.nextInt(dirs.length);
+//				dir = dirs[rn];
+//			}
+//			step--;
+//			if(r.nextInt(40) > 35) fire();
+//		}
 		switch(dir) {
 		case L: 
 			posX -= TANK_SPEED_X; 

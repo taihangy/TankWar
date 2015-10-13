@@ -18,22 +18,21 @@ import java.net.UnknownHostException;
  * @version V1.0
  */
 public class NetClient {
-	private static int UDP_PORT_START = 2228;
 	protected int udpPort;
 	protected TankClient tc;
 	protected DatagramSocket ds;
 	
 	public NetClient(TankClient tc) {
-		udpPort = UDP_PORT_START++;
 		this.tc = tc;
+	}
+	
+	public void connect(String IP, int port) {
 		try {
 			ds = new DatagramSocket(udpPort);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void connect(String IP, int port) {
+		
 		Socket s = null;
 		try {
 			s = new Socket(IP, port);
@@ -43,6 +42,8 @@ public class NetClient {
 			DataInputStream dis = new DataInputStream(s.getInputStream());
 			int id = dis.readInt();
 			tc.myTank.id = id;
+			if(id % 2 == 0) tc.myTank.good = false;
+			else tc.myTank.good = true; 
 System.out.println("Connected to server! and server give me a ID: " + id);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -93,13 +94,20 @@ System.out.println("a packet received from server");
 				Msg msg = null;
 				switch(msgType) {
 				case Msg.TANK_NEW_MSG:
-					
 					//内部类访问封装类的对象可以用这种方法
 					msg = new TankNewMsg(NetClient.this.tc);
 					msg.parse(dis);
 					break;
 				case Msg.TANK_MOVE_MSG:
-					msg = new TankMoveMsg(tc);
+					msg = new TankMoveMsg(NetClient.this.tc);
+					msg.parse(dis);
+					break;
+				case Msg.MISSILE_NEW_MSG:
+					msg = new MissileNewMsg(NetClient.this.tc);
+					msg.parse(dis);
+					break;
+				case Msg.TANK_DEAD_MSG:
+					msg = new TankDeadMsg(NetClient.this.tc);
 					msg.parse(dis);
 					break;
 				}

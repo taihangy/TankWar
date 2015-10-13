@@ -20,17 +20,19 @@ public class Missile {
 	protected boolean alive;
 	protected boolean good;
 	protected TankClient tc;
+	protected int tankid;
 	
 	
-	public Missile(int posX, int posY, Direction dir) {
+	public Missile(int tankid, int posX, int posY, Direction dir) {
+		this.tankid = tankid;
 		this.posX = posX;
 		this.posY = posY;
 		this.dir = dir;
 		this.alive = true;
 	}
 	
-	public Missile(int posX, int posY, Direction dir, boolean good, TankClient tc) {
-		this(posX, posY, dir);
+	public Missile(int tankid, int posX, int posY, Direction dir, boolean good, TankClient tc) {
+		this(tankid, posX, posY, dir);
 		this.tc = tc;
 		this.good = good;
 	}

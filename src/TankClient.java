@@ -7,9 +7,22 @@
  * @version V1.0
  */
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Label;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 public class TankClient extends Frame {
 	public static final int WIDTH = 800;
@@ -24,6 +37,7 @@ public class TankClient extends Frame {
 	protected ArrayList<Explode> explodes;
 	protected Image backScreenImage;
 	protected NetClient nc;
+	protected ConnDialog dialog = new ConnDialog();
 	
 	public TankClient() {
 		missiles = new ArrayList<Missile>();
@@ -49,9 +63,13 @@ public class TankClient extends Frame {
 		}
 		for(int i = 0; i < missiles.size(); i++) {
 			Missile missile = missiles.get(i);
-			missile.hitTank(myTank);
+			if(missile.hitTank(myTank)) {
+				TankDeadMsg msg = new TankDeadMsg(myTank.id);
+				nc.send(msg);
+			}
 			missile.draw(g);
 		}
+
 	}
 	
 	//Double buffer and background color
@@ -88,7 +106,7 @@ public class TankClient extends Frame {
 		// multi-thread start
 		new Thread(new PaintThread()).start();
 		//TCP connect to Server
-		nc.connect("127.0.0.1", TankServer.TCP_PORT);
+		//nc.connect("127.0.0.1", TankServer.TCP_PORT);
 	}
 	
 	private class PaintThread implements Runnable {
@@ -111,9 +129,53 @@ public class TankClient extends Frame {
 		}
 
 		public void keyPressed(KeyEvent e) {
-			myTank.keyPressed(e);
+			int key = e.getKeyCode();
+			if(key == KeyEvent.VK_C) {
+				dialog.setVisible(true);
+			} else {
+				myTank.keyPressed(e);
+			}
 		}
 		 
+	}
+	
+	
+	private class ConnDialog extends Dialog {
+		Button b = new Button("confirm");
+		TextField ip = new TextField("127.0.0.1", 12);
+		TextField tcpPort = new TextField("" + TankServer.TCP_PORT, 4);
+		TextField udpPort = new TextField("2223", 4);
+		
+		public ConnDialog() {
+			super(TankClient.this, true);
+			this.setLayout(new FlowLayout());
+			this.add(new Label("IP"));
+			this.add(ip);
+			this.add(new Label("Port:"));
+			this.add(tcpPort);
+			this.add(new Label("My UDP Port:"));
+			this.add(udpPort);
+			this.add(b);
+			this.setLocation(500, 500);
+			this.pack();
+			this.addWindowListener(new WindowAdapter(){
+				public void windowClosing(WindowEvent e) {
+					setVisible(false);
+				}
+			});
+			
+			b.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String IP = ip.getText();
+					int tcp = Integer.parseInt(tcpPort.getText().trim());
+					int udp = Integer.parseInt(udpPort.getText().trim());
+					nc.udpPort = udp;
+					nc.connect(IP, tcp);
+					setVisible(false);
+				}
+			});
+		}
+		
 	}
 	
 	public static void main(String[] args) {
