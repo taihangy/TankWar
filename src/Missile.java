@@ -13,24 +13,29 @@ import java.util.List;
  */
 public class Missile {
 	public static final int DIAMETER = 10;
-	public static final int MISSILE_SPEED_X = 15;
-	public static final int MISSILE_SPEED_Y = 15;
+	public static final int MISSILE_SPEED_X = 19;
+	public static final int MISSILE_SPEED_Y = 19;
 	protected int posX, posY;
 	protected Direction dir; 
 	protected boolean alive;
 	protected boolean good;
 	protected TankClient tc;
+	protected int tankId;
+	protected static int ID = 1;
+	protected int id;
 	
 	
-	public Missile(int posX, int posY, Direction dir) {
+	public Missile(int tankId, int posX, int posY, Direction dir) {
+		this.tankId = tankId;
 		this.posX = posX;
 		this.posY = posY;
 		this.dir = dir;
 		this.alive = true;
+		this.id = ID++;
 	}
 	
-	public Missile(int posX, int posY, Direction dir, boolean good, TankClient tc) {
-		this(posX, posY, dir);
+	public Missile(int tankid, int posX, int posY, Direction dir, boolean good, TankClient tc) {
+		this(tankid, posX, posY, dir);
 		this.tc = tc;
 		this.good = good;
 	}
@@ -51,7 +56,7 @@ public class Missile {
 		if(t.good != this.good && t.alive && getRect().intersects(t.getRect())){
 			t.alive = false;
 			alive = false;
-			Explode e = new Explode(posX, posY, true, 0, tc);
+			Explode e = new Explode(posX, posY, tc);
 			tc.explodes.add(e);
 			return true;
 		}

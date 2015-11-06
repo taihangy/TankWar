@@ -21,7 +21,9 @@ public class Tank {
 	protected boolean good;
 	protected boolean alive;
 	protected Direction[] dirs = Direction.values();
-	protected int step = r.nextInt(12) + 3;;
+	protected int step = r.nextInt(12) + 3;
+	//Unique ID server give
+	protected int id;
 	public static final int TANK_SPEED_X = 10;
 	public static final int TANK_SPEED_Y = 10;
 	public static final int TANK_WIDTH = 30;
@@ -45,7 +47,6 @@ public class Tank {
 	
 	public void draw(Graphics g) {
 		if(!alive) {
-			if(!good) tc.enemies.remove(this);
 			return;
 		}
 		drawTankBody(g);
@@ -128,10 +129,12 @@ public class Tank {
 		if(good) g.setColor(Color.RED);
 		else g.setColor(Color.BLUE);
 		g.fillOval(posX, posY, TANK_WIDTH, TANK_HEIGHT);
+g.drawString("id: " + id, posX, posY - 10);
 		g.setColor(c);
 	}
 	
 	private void locateDir() {
+		Direction oldDir = this.dir;
 		if(bL && !bR && !bU && !bD) dir = Direction.L;
 		else if(bL && !bR && bU && !bD) dir = Direction.LU;
 		else if(!bL && !bR && bU && !bD) dir = Direction.U;
@@ -141,13 +144,21 @@ public class Tank {
 		else if(!bL && !bR && !bU && bD) dir = Direction.D;
 		else if(bL && !bR && !bU && bD) dir = Direction.LD;
 		else dir = Direction.STOP;
+		
+		if(dir != oldDir) {
+			TankMoveMsg msg = new TankMoveMsg(id, posX, posY, dir, ptDir);
+			tc.nc.send(msg);
+		}
 	}
 	
 	private Missile fire() {
 		if(!alive) return null;
-		Missile m = new Missile(posX + TANK_WIDTH / 2 - Missile.DIAMETER / 2, 
+		Missile m = new Missile(id, posX + TANK_WIDTH / 2 - Missile.DIAMETER / 2, 
 								posY + TANK_HEIGHT / 2 - Missile.DIAMETER / 2, ptDir, good, tc);
 		tc.missiles.add(m);
+		
+		MissileNewMsg msg = new MissileNewMsg(m);
+		tc.nc.send(msg);
 		return m;
 	}
 	
@@ -160,15 +171,15 @@ public class Tank {
 	 * @throws
 	 */
 	private void move() {
-		if(!good) {
-			if(step == 0) {
-				step = r.nextInt(12) + 3;
-				int rn = r.nextInt(dirs.length);
-				dir = dirs[rn];
-			}
-			step--;
-			if(r.nextInt(40) > 35) fire();
-		}
+//		if(!good) {
+//			if(step == 0) {
+//				step = r.nextInt(12) + 3;
+//				int rn = r.nextInt(dirs.length);
+//				dir = dirs[rn];
+//			}
+//			step--;
+//			if(r.nextInt(40) > 35) fire();
+//		}
 		switch(dir) {
 		case L: 
 			posX -= TANK_SPEED_X; 
