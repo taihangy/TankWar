@@ -146,7 +146,7 @@ g.drawString("id: " + id, posX, posY - 10);
 		else dir = Direction.STOP;
 		
 		if(dir != oldDir) {
-			TankMoveMsg msg = new TankMoveMsg(id, posX, posY, dir);
+			TankMoveMsg msg = new TankMoveMsg(id, posX, posY, dir, ptDir);
 			tc.nc.send(msg);
 		}
 	}

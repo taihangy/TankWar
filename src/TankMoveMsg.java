@@ -21,13 +21,15 @@ public class TankMoveMsg extends Msg{
 	protected int posX;
 	protected int posY;
 	protected Direction dir;
+	protected Direction ptDir;
 	protected TankClient tc;
 	
-	public TankMoveMsg(int id, int posX, int posY, Direction dir) {
+	public TankMoveMsg(int id, int posX, int posY, Direction dir, Direction ptDir) {
 		this.id = id;
 		this.dir = dir;
 		this.posX = posX;
 		this.posY = posY;
+		this.ptDir = ptDir;
 	}
 
 	public TankMoveMsg(TankClient tc) {
@@ -43,6 +45,7 @@ public class TankMoveMsg extends Msg{
 			dos.writeInt(posX);
 			dos.writeInt(posY);
 			dos.writeInt(dir.ordinal());
+			dos.writeInt(ptDir.ordinal());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -64,14 +67,14 @@ public class TankMoveMsg extends Msg{
 			int posX = dis.readInt();
 			int posY = dis.readInt();
 			Direction dir = Direction.values()[dis.readInt()];
-//			boolean exist = false;
+			Direction ptDir = Direction.values()[dis.readInt()];
 			for(int i = 0; i < tc.tanks.size(); i++) {
 				Tank t = tc.tanks.get(i);
 				if(id == t.id) {
 					t.dir = dir;
+					t.ptDir = ptDir;
 					t.posX = posX;
 					t.posY = posY;
-//					exist = true;
 					break;
 				}
 			} 

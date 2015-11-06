@@ -23,6 +23,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class TankClient extends Frame {
 	public static final int WIDTH = 800;
@@ -38,10 +39,11 @@ public class TankClient extends Frame {
 	protected Image backScreenImage;
 	protected NetClient nc;
 	protected ConnDialog dialog = new ConnDialog();
+	protected static Random r = new Random();
 	
 	public TankClient() {
 		missiles = new ArrayList<Missile>();
-		myTank = new Tank(50, 50, true, Direction.STOP, this);
+		myTank = new Tank(r.nextInt(WIDTH), r.nextInt(HEIGHT), true, Direction.STOP, this);
 		tanks = new ArrayList<Tank>();
 		backScreenImage = this.createImage(WIDTH, HEIGHT);
 		explodes = new ArrayList<Explode>();
@@ -50,8 +52,7 @@ public class TankClient extends Frame {
 	}
 	
 	public void paint(Graphics g) {
-		g.drawString("Missiles count: " + missiles.size(), WIDTH - 120, 50);
-		g.drawString("Explodes count: " + explodes.size(), WIDTH - 120, 70);
+		g.drawString("Press c in keyboard to connect to server", WIDTH - 120, 50);
 		myTank.draw(g);
 		for(int i = 0; i < explodes.size(); i++) {
 			Explode e = explodes.get(i);
@@ -71,7 +72,6 @@ public class TankClient extends Frame {
 			}
 			missile.draw(g);
 		}
-
 	}
 	
 	//Double buffer and background color
@@ -105,8 +105,9 @@ public class TankClient extends Frame {
 		
 		this.addKeyListener(new KeyMonitor());
 		setVisible(true);
-		// multi-thread start
-		new Thread(new PaintThread()).start();
+		// paint-thread start
+		Thread paintThread = new Thread(new PaintThread(), "Paint thread");
+		paintThread.start();
 		//TCP connect to Server
 		//nc.connect("127.0.0.1", TankServer.TCP_PORT);
 	}

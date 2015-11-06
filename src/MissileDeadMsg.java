@@ -59,6 +59,8 @@ public class MissileDeadMsg extends Msg {
 				Missile m = tc.missiles.get(i);
 				if(tankId == m.tankId && id == m.id) {
 					m.alive = false;
+					tc.explodes.add(new Explode(m.posX, m.posY, tc));
+					break;
 				}
 			} 
 		} catch (IOException e) {

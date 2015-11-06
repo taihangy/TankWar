@@ -17,11 +17,11 @@ public class Explode {
 	protected int step;
 	
 	
-	public Explode(int posX, int posY, boolean alive, int step, TankClient tc) {
+	public Explode(int posX, int posY, TankClient tc) {
 		this.posX = posX;
 		this.posY = posY;
-		this.alive = alive;
-		this.step = step;
+		this.alive = true;
+		this.step = 0;
 		this.tc = tc;
 	}
 
